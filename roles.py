@@ -3,19 +3,19 @@ from milvus import MilvusClient
 # Replace with your Milvus connection details
 milvus_client = MilvusClient(host="localhost", port="19530")
 
-def create_collections(folder_names):
+def create_collections(folder_names,user_role):
     # Get user information from authentication
-  username = utility.list_usernames(using='default')
-  user_role = utility.list_roles(include_user_info=False, using="default")
+#  username = utility.list_usernames(using='default')
+ # user_role = utility.list_roles(include_user_info=False, using="default")
 
 
   """Creates Milvus collections for each folder with default schema."""
   for folder_name in folder_names:
     if user_role == "admin":
       collection_schema = {"metric": {"similarity_type": "L2"}, "fields": [{"name": "document", "type": "VECTOR", "dim": 128}]}
-      milvus_client.create_collection(name=folder_name, schema=collection_schema, owner=username)
+      milvus_client.create_collection(name=folder_name, schema=collection_schema)
     else:
-      print(f"User {username} with role {user_role} cannot create collections.")
+      print(f"Username with role {user_role} cannot create collections.")
 
 folder_names = ["management", "internal", "property"]  # Your folder names
 create_collections(folder_names)
@@ -83,20 +83,20 @@ def query_collections():
   return jsonify(search_results)
 
 
-def func(user_id, folder_name):
+def func(folder_name):
     folder_paths = {
         "management": r"C:\Users\ADMIN\Downloads\management",
         "Internal": r"C:\Users\ADMIN\Downloads\Internal",
         "lease": r"C:\Users\ADMIN\Downloads\lease"
     }
-    folder_path = folder_paths.get(folder_name)
-    if folder_path:
-        process_folder(user_id, folder_path)
+    folder_names = folder_paths.get(folder_name)
+    if folder_names:
+        create_collections(folder_names)
     else:
         raise ValueError("Invalid folder name provided")
     
-    if __name__ == "__main__":
-
+if __name__ == "__main__":
+    user_role="admin"
     folder_name = "management"  
-    func(user_id, folder_name)
+    func(folder_name)
     
