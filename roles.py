@@ -17,10 +17,6 @@ def create_collections(folder_names,user_role):
     else:
       print(f"Username with role {user_role} cannot create collections.")
 
-folder_names = ["management", "internal", "property"]  # Your folder names
-create_collections(folder_names)
-
-from milvus import Permission, CollectionSchema
 
 def define_roles(milvus_client):
   """Defines roles (admin, client) with specific permissions on collections."""
